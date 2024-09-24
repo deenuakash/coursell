@@ -1,0 +1,89 @@
+//// User endpoints ////
+
+
+//User Signup
+POST http://localhost:3000/api/user/signup
+Content-Type: application/json
+
+{
+  "email": "email1@gmail.com",
+  "password": "password",
+  "firstName": "FName1",
+  "lastName": "LName1"
+}
+
+###
+//User Signin
+POST http://localhost:3000/api/user/signin
+Content-Type: application/json
+
+{
+  "email": "email1@gmail.com",
+  "password": "password"
+}
+
+###
+//User purchase a course
+POST  http://localhost:3000/api/user/purchase/66f2f5f120f6b5bbf625584d
+Content-Type: application/json
+Authorization: Bearer <token>
+
+###
+//All user purchases
+GET http://localhost:3000/api/user/purchases
+Content-Type: application/json
+Authorization: Bearer <token>
+
+
+
+//// Admin endpoints ////
+
+###
+//Admin Signup
+POST http://localhost:3000/api/admin/signup
+Content-Type: application/json
+
+{
+  "email": "email2@gmail.com",
+  "password": "password",
+  "firstName": "FName2",
+  "lastName": "LName2"
+}
+
+###
+// Admin Signin
+POST http://localhost:3000/api/admin/signin
+Content-Type: application/json
+
+{
+  "email": "email2@gmail.com",
+  "password": "password"
+}
+
+###
+//Create a course
+POST http://localhost:3000/api/admin/course
+Content-Type: application/json
+Authorization: Bearer <token>
+{
+  "name": "Test Course 1",
+  "description": "Test Desc 1",
+  "price": 10000
+}
+
+###
+//Get all created courses
+GET http://localhost:3000/api/admin/courses
+Authorization: Bearer <token>
+
+###
+//Update a course
+PUT http://localhost:3000/api/admin/course/66f2e4c89ac24d7412b96a86
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "name": "Test Course 1 Updated",
+  "description": "Test Desc 1 updated",
+  "price": 7000
+}
