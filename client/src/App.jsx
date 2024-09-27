@@ -33,7 +33,7 @@ function App() {
         >
           <div className="container mx-auto">
             <div className="flex flex-wrap justify-center ">
-              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[80%]">
+              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[90%] lg:w-[80%]">
                 <Outlet />
               </div>
             </div>
