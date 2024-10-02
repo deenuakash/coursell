@@ -68,7 +68,7 @@ const sendOTP = async function (req, res) {
       otp,
       expires: Date.now() + 1000 * 60 * 30,
     });
-    // await sendEmail(email, otp);
+    await sendEmail(email, otp);
     await verification.save();
     res.status(201).json({
       message: "OTP sent successfully",
