@@ -7,6 +7,7 @@ const {
   checkUser,
   sendOTP,
   verifyOTP,
+  resetPassword,
 } = require("../controllers/userController");
 const userAuth = require("../middlewares/userAuth");
 
@@ -15,6 +16,8 @@ userRouter.post("/checkUser", checkUser);
 userRouter.post("/sendOTP", sendOTP);
 
 userRouter.post("/verifyOTP", verifyOTP);
+
+userRouter.put("/resetPassword", resetPassword);
 
 userRouter.post("/signup", signup);
 

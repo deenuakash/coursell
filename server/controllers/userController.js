@@ -127,6 +127,38 @@ const verifyOTP = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  const parsedData = signinSchema.safeParse(req.body);
+  if (!parsedData.success) {
+    return res.status(400).json({
+      message: "Invalid Login Credential",
+      error: parsedData.error.errors,
+    });
+  }
+
+  try {
+    const user = await userModel.findOne({ email, role: "user" });
+    if (!user) {
+      return res.status(401).json({
+        message: "User not available.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await userModel.updateOne({ _id: user._id }, { password: hashedPassword });
+
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 const signup = async function (req, res) {
   const { email } = req.body;
 
@@ -302,4 +334,5 @@ module.exports = {
   checkUser,
   sendOTP,
   verifyOTP,
+  resetPassword,
 };

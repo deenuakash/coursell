@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { emailOrPhoneSchema } from "../utils/validationSchema";
+import { emailOrPhoneSchema, passwordSchema } from "../utils/validationSchema";
 import { AuthContext } from "../contexts/AuthContext";
 
 const Modal = () => {
@@ -23,6 +23,8 @@ const Modal = () => {
   const [OTP, setOTP] = useState("");
   const [showResend, setShowResend] = useState(false);
   const [timer, setTimer] = useState(30);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetPassword, setResetPassword] = useState(false);
 
   useEffect(() => {
     if (step === 3 && timer > 0) {
@@ -52,7 +54,6 @@ const Modal = () => {
       if (data.status) setStep(2);
       else {
         handleOTPLogin(input);
-        // setStep(3);
         otpStep();
       }
     },
@@ -87,7 +88,6 @@ const Modal = () => {
     },
     onSuccess: (data) => {
       setOTP("");
-      // setStep(3);
       otpStep();
     },
     onError: (err) => {
@@ -110,6 +110,22 @@ const Modal = () => {
     },
     onError: (err) => {
       setError(err.response.data.message);
+    },
+  });
+
+  const { mutate: resetPasswordMutation } = useMutation({
+    mutationFn: async () => {
+      const res = await axios.put(`${uri}/api/user/resetPassword`, {
+        email: input,
+        password,
+      });
+    },
+    onSuccess: (data) => {
+      setShow(false);
+      setResetPassword(false);
+    },
+    onError: (err) => {
+      console.log(err);
     },
   });
 
@@ -139,15 +155,36 @@ const Modal = () => {
   };
 
   const verifyOTP = () => {
-    setShowResend(false);
-    setTimer(30);
-    verifyOTPMutation();
+    if (resetPassword) setStep(6);
+    else {
+      verifyOTPMutation();
+    }
   };
 
   const resendOTP = () => {
     setShowResend(false);
     setTimer(30);
     sendOTPMutation(input);
+  };
+
+  const sendOTPForReset = () => {
+    setResetPassword(true);
+    handleOTPLogin(input);
+    otpStep();
+  };
+
+  const handleResetPassword = () => {
+    setError("");
+    const parsedPassword = passwordSchema.safeParse(password);
+    const parsedConfirmPassword = passwordSchema.safeParse(confirmPassword);
+    if (!parsedPassword.success || !parsedConfirmPassword.success) {
+      setError(parsedPassword.error.errors[0].message);
+    }
+    if (password === confirmPassword) {
+      resetPasswordMutation();
+    } else {
+      setError("Password do not match");
+    }
   };
 
   return (
@@ -218,7 +255,7 @@ const Modal = () => {
               </button>
               <button
                 className="px-6 py-1.5 rounded-full w-full leading-[1.8] text-[#2f80ed] underline text-[12.8px] mt-1"
-                onClick={handleNext}
+                onClick={() => setStep(5)}
               >
                 Forgot Password
               </button>
@@ -306,7 +343,7 @@ const Modal = () => {
               <div>
                 <button
                   className="px-6 py-1.5 rounded-full w-full leading-[1.8] text-[#2f80ed] underline text-[12.8px] mt-1 text-right"
-                  onClick={handleNext}
+                  onClick={() => setStep(5)}
                 >
                   Forgot Password
                 </button>
@@ -318,6 +355,94 @@ const Modal = () => {
                 onClick={handleLogin}
               >
                 Login
+              </button>
+            </div>
+          </div>
+        )}
+        {step === 5 && (
+          <div>
+            <div className="flex items-center justify-center mb-6">
+              <button className="text-[gray]" onClick={() => setStep(2)}>
+                <FontAwesomeIcon icon={faCircleLeft} />
+              </button>
+              <h4 className="flex-grow text-center text-xl font-bold leading-[1.8]">
+                Recover your Password
+              </h4>
+              <button className="text-[#146fe6]" onClick={() => setShow(false)}>
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </button>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="input" className="inline-block mb-2 font-medium">
+                Phone number/Email Id
+              </label>
+              <input
+                id="input"
+                className="block w-full rounded-full px-3 py-2 bg-[#f6f7f9] border border-[#dee2e6]  leading-[1.8] focus:outline-0 focus:border-[#86b7fe]"
+                type="text"
+                placeholder="Enter your Email"
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+              />
+            </div>
+            <div className="text-center">
+              <button
+                className="bg-[#146fe6] px-6 py-2 rounded-full text-white hover:bg-[#1058b7] leading-[1.8]"
+                onClick={sendOTPForReset}
+              >
+                Reset Password
+              </button>
+            </div>
+          </div>
+        )}
+        {step === 6 && (
+          <div>
+            <div className="flex items-center justify-center mb-6">
+              <h4 className="flex-grow text-center text-xl font-bold leading-[1.8]">
+                Set a new Password
+              </h4>
+              <button className="text-[#146fe6]" onClick={() => setShow(false)}>
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </button>
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="inline-block mb-2 font-medium"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                className="block w-full rounded-full px-3 py-2 bg-[#f6f7f9] border border-[#dee2e6]  leading-[1.8] focus:outline-0 focus:border-[#86b7fe]"
+                type="password"
+                placeholder="Enter your Password"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="confirmPassword"
+                className="inline-block mb-2 font-medium"
+              >
+                Confirm Password
+              </label>
+              <input
+                id="confirmPassword"
+                className="block w-full rounded-full px-3 py-2 bg-[#f6f7f9] border border-[#dee2e6]  leading-[1.8] focus:outline-0 focus:border-[#86b7fe]"
+                type="password"
+                placeholder="Enter your Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={confirmPassword}
+              />
+            </div>
+            <div className="text-center">
+              <button
+                className="bg-[#146fe6] px-6 py-2 rounded-full text-white hover:bg-[#1058b7] leading-[1.8]"
+                onClick={handleResetPassword}
+              >
+                Reset Password
               </button>
             </div>
           </div>
