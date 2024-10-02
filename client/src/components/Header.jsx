@@ -5,8 +5,13 @@ import {
   faCircleUser,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { ModalContext } from "../contexts/ModalContext";
 
 const Header = ({ setExpand }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const { setShow } = useContext(ModalContext);
   return (
     <header className="flex items-center justify-between shadow-sm md:px-6 py-1 z-10 sticky top-0 bg-white">
       <div className="flex items-center justify-between w-full mx-auto px-3">
@@ -26,7 +31,7 @@ const Header = ({ setExpand }) => {
         {/* Search bar and user icon */}
         <div className="flex items-center">
           {/* Search Bar */}
-          <div className="w-[300px] h-[40px] bg-[#f6f7f9] rounded-3xl overflow-hidden mx-3 border border-[#dee2e6] hidden md:flex">
+          <div className="w-[300px] h-[42px] bg-[#f6f7f9] rounded-3xl overflow-hidden mx-4 border border-[#dee2e6] hidden md:flex">
             <input
               type="text"
               className="bg-[#f6f7f9] px-3 flex-auto h-full rounded-l-3xl focus:border focus:border-[#86b7fe] focus:outline"
@@ -47,14 +52,29 @@ const Header = ({ setExpand }) => {
           </Link>
 
           {/* User Icon */}
-          <div>
+          {isAuthenticated ? (
             <Link to="/purchases">
               <FontAwesomeIcon
                 icon={faCircleUser}
                 className="text-[40px] text-[#146fe6]"
               />
             </Link>
-          </div>
+          ) : (
+            <div className="text-white">
+              <button
+                className="bg-[#146fe6] py-2 px-6 mr-2 rounded-3xl"
+                onClick={() => setShow(true)}
+              >
+                Signup
+              </button>
+              <button
+                className="bg-[#146fe6] py-2 px-6 rounded-3xl"
+                onClick={() => setShow(true)}
+              >
+                Login
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

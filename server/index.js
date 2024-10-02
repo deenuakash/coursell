@@ -1,11 +1,14 @@
 const express = require("express");
 require("dotenv").config();
 require("./config/db");
+const cors = require("cors");
 const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
 const rateLimiter = require("./middlewares/rateLimiter");
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 

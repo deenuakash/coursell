@@ -4,8 +4,17 @@ const {
   signin,
   purchases,
   purchase,
+  checkUser,
+  sendOTP,
+  verifyOTP,
 } = require("../controllers/userController");
 const userAuth = require("../middlewares/userAuth");
+
+userRouter.post("/checkUser", checkUser);
+
+userRouter.post("/sendOTP", sendOTP);
+
+userRouter.post("/verifyOTP", verifyOTP);
 
 userRouter.post("/signup", signup);
 

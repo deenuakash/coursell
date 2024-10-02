@@ -1,9 +1,11 @@
 import { Outlet } from "react-router-dom";
-import { Footer, Header, SideBar } from "./components";
-import { useEffect, useState } from "react";
+import { Footer, Header, Modal, SideBar } from "./components";
+import { useContext, useEffect, useState } from "react";
+import { ModalContext } from "./contexts/ModalContext";
 
 function App() {
   const [expand, setExpand] = useState(true);
+  const { show } = useContext(ModalContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,19 +30,20 @@ function App() {
         {/* Content Area */}
         <div
           className={`transition-all duration-300 ${
-            expand ? "ml-[280px]" : "ml-0"
+            expand ? "lg:ml-[280px]" : "ml-0"
           } w-full`}
         >
           <div className="container mx-auto">
             <div className="flex flex-wrap justify-center ">
-              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[90%] lg:w-[80%]">
+              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[90%] lg:w-[80%] relative">
                 <Outlet />
+                <Footer />
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* <Footer /> */}
+      {show && <Modal />}
     </div>
   );
 }

@@ -3,7 +3,6 @@ import {
   faGear,
   faGraduationCap,
   faHouse,
-  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
 const navItems1 = [
@@ -29,11 +28,6 @@ const navItems2 = [
     item: "Settings",
     icon: faGear,
     path: "/settings",
-  },
-  {
-    item: "Logout",
-    icon: faRightFromBracket,
-    path: "/logout",
   },
 ];
 

@@ -2,13 +2,133 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
 const userModel = require("../models/userModel");
-const { signupSchema, signinSchema } = require("../utils/validationSchema");
+const {
+  signupSchema,
+  signinSchema,
+  emailOrPhoneSchema,
+  verifyOTPSchema,
+} = require("../utils/validationSchema");
 const courseModel = require("../models/courseModel");
 const purchaseModel = require("../models/purchaseModel");
 const { default: mongoose } = require("mongoose");
+const { sendEmail } = require("../config/mailer");
+const verificationModel = require("../models/verificationModel");
+
+const checkUser = async function (req, res) {
+  const { input } = req.body;
+  const parsedData = emailOrPhoneSchema.safeParse(req.body.input);
+  if (!parsedData.success) {
+    return res.status(400).json({
+      message: "Email or Phone number is invalid",
+      error: parsedData.error.errors,
+    });
+  }
+
+  const isEmailAvailable = await userModel.findOne({ email: input });
+
+  if (isEmailAvailable) {
+    return res.status(200).json({
+      message: "User exists",
+      status: true,
+    });
+  }
+
+  const hashedPassword = await bcrypt.hash("", 10);
+
+  const newUser = new userModel({
+    email: input,
+    password: hashedPassword,
+  });
+
+  await newUser.save();
+
+  res.status(200).json({
+    message: "User created",
+    status: false,
+  });
+};
+
+const sendOTP = async function (req, res) {
+  const { email } = req.body;
+
+  const otp = Math.floor(1000 + Math.random() * 9000);
+
+  try {
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(401).json({
+        message: "UserId is invalid",
+      });
+    }
+
+    await verificationModel.deleteMany({ userId: user._id });
+    const verification = new verificationModel({
+      userId: user._id,
+      email,
+      otp,
+      expires: Date.now() + 1000 * 60 * 30,
+    });
+    // await sendEmail(email, otp);
+    await verification.save();
+    res.status(201).json({
+      message: "OTP sent successfully",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+
+  const parsedData = verifyOTPSchema.safeParse(req.body);
+
+  if (!parsedData.success) {
+    return res.status(401).json({
+      message: "OTP is invalid",
+    });
+  }
+
+  try {
+    const verify = await verificationModel.findOne({ email, otp });
+
+    if (!verify) {
+      return res.status(401).json({
+        message: "OTP is invalid",
+      });
+    }
+
+    await verificationModel.deleteMany({ email });
+
+    const user = await userModel.findOne({ email });
+
+    const token = await jwt.sign(
+      { _id: user._id, role: user.role },
+      process.env.USER_JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.status(200).json({
+      message: "Signed in Successfully",
+      token,
+      user: {
+        email,
+        id: user._id,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
 
 const signup = async function (req, res) {
-  const { email, password, firstName, lastName } = req.body;
+  const { email } = req.body;
 
   const parsedData = signupSchema.safeParse(req.body);
 
@@ -56,7 +176,7 @@ const signin = async function (req, res) {
 
   if (!parsedData.success) {
     return res.status(400).json({
-      message: "Invalid credentials",
+      message: "Invalid Login Credential",
       error: parsedData.error.errors,
     });
   }
@@ -74,7 +194,7 @@ const signin = async function (req, res) {
 
     if (!isValidPassword) {
       return res.status(401).json({
-        message: "Password is incorrect",
+        message: "Invalid Login Credential",
       });
     }
 
@@ -91,7 +211,7 @@ const signin = async function (req, res) {
       token,
       user: {
         email: user.email,
-        firstName: user.firstName,
+        id: user._id,
       },
     });
   } catch (err) {
@@ -174,4 +294,12 @@ const purchases = async function (req, res) {
   }
 };
 
-module.exports = { signup, signin, purchases, purchase };
+module.exports = {
+  signup,
+  signin,
+  purchases,
+  purchase,
+  checkUser,
+  sendOTP,
+  verifyOTP,
+};
