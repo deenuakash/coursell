@@ -7,7 +7,7 @@ const CourseCard = ({ course }) => {
     return discountPercentage.toFixed(2);
   };
   return (
-    <div className="w-[396px] p-2">
+    <div className="w-[396px] px-3 mb-6">
       <div className="rounded-xl overflow-hidden border h-full flex flex-col">
         <img
           src={course.image}
