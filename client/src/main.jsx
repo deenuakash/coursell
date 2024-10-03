@@ -4,7 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { Courses, Home, Login, Purchases, Settings } from "./pages";
+import { Courses, Home, Login, Purchases, Search, Settings } from "./pages";
 import AuthProvider from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ModalProvider from "./contexts/ModalContext.jsx";
@@ -27,6 +27,7 @@ const router = createBrowserRouter([
       },
       { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
       { path: "/login", element: <Login /> },
+      { path: "/search", element: <Search /> },
     ],
   },
 ]);

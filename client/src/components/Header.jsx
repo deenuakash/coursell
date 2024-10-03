@@ -1,17 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faCircleUser,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { ModalContext } from "../contexts/ModalContext";
 
 const Header = ({ setExpand }) => {
   const { isAuthenticated } = useContext(AuthContext);
   const { setShow } = useContext(ModalContext);
+
+  const { pathname } = useLocation();
+
+  const [search, setSearch] = useState("");
   return (
     <header className="flex items-center justify-between shadow-sm md:px-6 py-1 z-10 sticky top-0 bg-white">
       <div className="flex items-center justify-between w-full mx-auto px-3">
@@ -21,28 +25,32 @@ const Header = ({ setExpand }) => {
         >
           <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
         </button>
-        {/* Logo */}
         <div className="mr-auto">
           <Link to="/">
             <img src="icon.jpg" className="w-[50px]" alt="Logo" />
           </Link>
         </div>
 
-        {/* Search bar and user icon */}
         <div className="flex items-center">
-          {/* Search Bar */}
-          <div className="w-[300px] h-[42px] bg-[#f6f7f9] rounded-3xl overflow-hidden mx-4 border border-[#dee2e6] hidden md:flex">
-            <input
-              type="text"
-              className="bg-[#f6f7f9] px-3 flex-auto h-full rounded-l-3xl focus:border focus:border-[#86b7fe] focus:outline"
-              placeholder="Type here to search.."
-            />
-            <button className="px-3 border-l h-full hover:bg-[#b9b9bb]">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </button>
-          </div>
-
-          {/* Search Icon */}
+          {pathname !== "/search" && (
+            <div className="w-[300px] h-[42px] bg-[#f6f7f9] rounded-3xl overflow-hidden mx-4 border border-[#dee2e6] hidden md:flex">
+              <input
+                type="text"
+                className="bg-[#f6f7f9] px-3 flex-auto h-full rounded-l-3xl focus:border focus:border-[#86b7fe] focus:outline"
+                placeholder="Type here to search.."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Link
+                to={search ? `/search?query=${search}` : "/search"}
+                onClick={() => setSearch("")}
+              >
+                <button className="px-3 border-l h-full hover:bg-[#b9b9bb]">
+                  <FontAwesomeIcon icon={faMagnifyingGlass} />
+                </button>
+              </Link>
+            </div>
+          )}
 
           <Link
             to="/search"
@@ -51,7 +59,6 @@ const Header = ({ setExpand }) => {
             <FontAwesomeIcon icon={faMagnifyingGlass} />
           </Link>
 
-          {/* User Icon */}
           {isAuthenticated ? (
             <Link to="/purchases">
               <FontAwesomeIcon

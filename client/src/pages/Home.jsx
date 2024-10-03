@@ -1,14 +1,24 @@
+import { useQuery } from "@tanstack/react-query";
 import { CourseCard, HomeSection, Slider } from "../components";
 import { courses } from "../utils/courses";
+import axios from "axios";
 
 const Home = () => {
+  const uri = import.meta.env.VITE_SERVER_ENDPOINT;
+  const { data } = useQuery({
+    queryKey: ["courses"],
+    queryFn: async () => {
+      const res = await axios.get(`${uri}/api/courses`);
+      return res.data
+    },
+  });
   return (
     <>
       <Slider />
       <HomeSection title="Featured">
         <div className="flex flex-wrap justify-center">
-          {courses
-            .filter((_, i) => i < 3)
+          {data?.courses?.
+            filter((_, i) => i < 3)
             .map((course, i) => (
               <CourseCard key={i} course={course} />
             ))}

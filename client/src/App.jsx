@@ -24,10 +24,7 @@ function App() {
     <div className="font-sans relative">
       <Header setExpand={setExpand} />
       <div className="flex">
-        {/* Sidebar */}
         <SideBar expand={expand} />
-
-        {/* Content Area */}
         <div
           className={`transition-all duration-300 ${
             expand ? "lg:ml-[280px]" : "ml-0"
@@ -35,7 +32,7 @@ function App() {
         >
           <div className="container mx-auto">
             <div className="flex flex-wrap justify-center ">
-              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[90%] lg:w-[80%] relative">
+              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-full md:w-[90%] lg:w-[80%] relative">
                 <Outlet />
                 <Footer />
               </div>

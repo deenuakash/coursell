@@ -6,7 +6,6 @@ const courseSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   createdBy: { type: ObjectId, required: true, ref: "users" },
   updatedAt: { type: Date, default: Date.now },
-  price: { type: Number, default: 0, min: 0 },
   description: { type: String },
 });
 
