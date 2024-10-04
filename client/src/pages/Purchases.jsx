@@ -28,33 +28,36 @@ const Purchases = () => {
           Courses
         </Link>
       </div>
-      {data?.courses?.map((course) => (
-        <div className="w-[370px] min-w-[300px] mb-6" key={course._id}>
-          <div className="rounded-3xl overflow-hidden border h-full flex flex-col shadow-lg">
-            <img
-              src={course?.image}
-              alt={course?.name}
-              className="m-h-[220px] w-full object-cover"
-            />
 
-            <div className="flex flex-col flex-auto border-t p-5 h-full bg-[#e8f0fa]">
-              <div className="flex items-center justify-start mb-4">
-                <div className="text-lg font-bold mb-4">{course?.name}</div>
+      <div className="flex flex-wrap">
+        {data?.courses?.map((course) => (
+          <div className="w-[370px] min-w-[300px] mx-3 mb-6" key={course._id}>
+            <div className="rounded-3xl overflow-hidden border h-full flex flex-col shadow-lg">
+              <img
+                src={course?.image}
+                alt={course?.name}
+                className="m-h-[220px] w-full object-cover"
+              />
+
+              <div className="flex flex-col flex-auto border-t p-5 h-full bg-[#e8f0fa]">
+                <div className="flex items-center justify-start mb-4">
+                  <div className="text-lg font-bold mb-4">{course?.name}</div>
+                </div>
+
+                <Link
+                  className="mt-auto block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]"
+                  to={`/purchases/${course?._id}`}
+                >
+                  View
+                </Link>
+                <Link className="mt-2 block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]">
+                  View invoice
+                </Link>
               </div>
-
-              <Link
-                className="mt-auto block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]"
-                to={`/purchases/${course?._id}`}
-              >
-                View
-              </Link>
-              <Link className="mt-2 block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]">
-                View invoice
-              </Link>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
