@@ -11,6 +11,7 @@ const courseSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
   description: { type: String },
   validity: String,
+  id: Number,
 });
 
 const courseModel = model("courses", courseSchema);

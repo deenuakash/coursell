@@ -3,19 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Description } from "../components";
 import { ModalContext } from "../contexts/ModalContext";
 import { AuthContext } from "../contexts/AuthContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Course = () => {
   const { id } = useParams();
   const uri = import.meta.env.VITE_SERVER_ENDPOINT;
 
+  const navigate = useNavigate();
+
   const { setShow } = useContext(ModalContext);
   const { isAuthenticated } = useContext(AuthContext);
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["course", id],
     queryFn: async () => {
       const res = await axios.get(
@@ -79,7 +83,11 @@ const Course = () => {
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
+      refetch();
+      toast.success("Course purchased successfully!", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
     onError: (err) => {
       console.log(err);
@@ -87,13 +95,8 @@ const Course = () => {
   });
 
   useEffect(() => {
-    // Calculate banner height on load
     calculateBannerHeight();
-
-    // Recalculate on window resize for responsiveness
     window.addEventListener("resize", calculateBannerHeight);
-
-    // Cleanup event listener on unmount
     return () => {
       window.removeEventListener("resize", calculateBannerHeight);
     };
@@ -101,7 +104,7 @@ const Course = () => {
 
   return (
     <div>
-      {/* Banner Section */}
+      <ToastContainer />
       <div ref={bannerRef} className="absolute top-0 left-0 w-full">
         <div className="w-full py-12 bg-[#1058B7]">
           <div className="container mx-auto">
@@ -116,7 +119,6 @@ const Course = () => {
         </div>
       </div>
 
-      {/* Content Section */}
       <div
         className="relative flex flex-col"
         style={{ paddingTop: `${bannerHeight}px` }}
@@ -156,41 +158,52 @@ const Course = () => {
                     </span>
                   </div>
                 )}
-                <div className="mb-2 flex justify-between items-center">
-                  Choose Currency:
-                  <div className="relative w-[80px]">
-                    <select
-                      className="pl-2 pr-8 border py-1 rounded-2xl appearance-none bg-white focus:border-[#86b7fe] focus:outline"
-                      name="currency"
-                      id="currency"
-                      defaultValue="INR"
-                    >
-                      <option>AUD</option>
-                      <option>CAD</option>
-                      <option>CNY</option>
-                      <option>EUR</option>
-                      <option>GBP</option>
-                      <option>INR</option>
-                      <option>JPY</option>
-                      <option>USD</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-                      <FontAwesomeIcon
-                        icon={faChevronDown}
-                        className="text-sm"
-                      />
+                {data?.course?.purchased ? (
+                  <Link
+                    className="mt-auto block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]"
+                    to={`/purchases/${data?.course?._id}`}
+                  >
+                    View
+                  </Link>
+                ) : (
+                  <div>
+                    <div className="mb-2 flex justify-between items-center">
+                      Choose Currency:
+                      <div className="relative w-[80px]">
+                        <select
+                          className="pl-2 pr-8 border py-1 rounded-2xl appearance-none bg-white focus:border-[#86b7fe] focus:outline"
+                          name="currency"
+                          id="currency"
+                          defaultValue="INR"
+                        >
+                          <option>AUD</option>
+                          <option>CAD</option>
+                          <option>CNY</option>
+                          <option>EUR</option>
+                          <option>GBP</option>
+                          <option>INR</option>
+                          <option>JPY</option>
+                          <option>USD</option>
+                        </select>
+                        <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                          <FontAwesomeIcon
+                            icon={faChevronDown}
+                            className="text-sm"
+                          />
+                        </div>
+                      </div>
                     </div>
+                    <Link
+                      className="mt-auto block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]"
+                      onClick={() => handleBuy(data.course._id)}
+                    >
+                      Buy Now
+                    </Link>
+                    <Link className="mt-2 block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]">
+                      Pay via Crypto
+                    </Link>
                   </div>
-                </div>
-                <Link
-                  className="mt-auto block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]"
-                  onClick={() => handleBuy(data.course._id)}
-                >
-                  Buy Now
-                </Link>
-                <Link className="mt-2 block w-full rounded-3xl bg-[#146fe6] py-2 px-6 text-white text-center leading-[1.8]">
-                  Pay via Crypto
-                </Link>
+                )}
               </div>
             </div>
           </div>

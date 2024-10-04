@@ -3,7 +3,7 @@ const purchaseModel = require("../models/purchaseModel");
 
 const getCourses = async (req, res) => {
   try {
-    const courses = await courseModel.find({});
+    const courses = await courseModel.find({}).sort({ id: 1 });
     let updatedCourses = courses.map((course) => ({
       ...course._doc,
       purchased: false,
@@ -58,7 +58,7 @@ const getCourse = async (req, res) => {
   try {
     const { id } = req.params;
     const course = await courseModel.findOne({ _id: id });
-    let updatedCourse = { ...course, purchased: false };
+    let updatedCourse = { ...course.toObject(), purchased: false };
     if (req.user) {
       [updatedCourse] = await updatePurchaseDetails(req.user, [course]);
     }

@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 
 const PurchasedCourse = () => {
   const [activeTab, setActiveTab] = useState("content");
   const { id } = useParams();
   const uri = import.meta.env.VITE_SERVER_ENDPOINT;
+  const navigate = useNavigate();
 
   const { data } = useQuery({
     queryKey: ["course", id],
@@ -27,7 +28,8 @@ const PurchasedCourse = () => {
       <div className="mb-6 flex items-center">
         <FontAwesomeIcon
           icon={faCircleChevronLeft}
-          className="pr-6 m-1 text-gray-500 text-lg"
+          className="pr-6 m-1 text-gray-500 text-lg cursor-pointer"
+          onClick={() => navigate(-1)}
         />
         <h3 className="text-3xl flex-grow font-bold">{data?.course?.name}</h3>
       </div>
