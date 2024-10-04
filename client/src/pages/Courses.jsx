@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CourseCard } from "../components";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Courses = () => {
   const uri = import.meta.env.VITE_SERVER_ENDPOINT;
+
+  const { isAuthenticated } = useContext(AuthContext);
+
   const { data, isError, isLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: async () => {
-      const res = await axios.get(`${uri}/api/courses`);
+      const res = await axios.get(
+        `${uri}/api/courses`,
+        isAuthenticated && {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        }
+      );
       return res.data;
     },
   });

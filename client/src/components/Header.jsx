@@ -17,7 +17,7 @@ const Header = ({ setExpand }) => {
 
   const [search, setSearch] = useState("");
   return (
-    <header className="flex items-center justify-between shadow-sm md:px-6 py-1 z-10 sticky top-0 bg-white">
+    <header className="flex items-center justify-between shadow-sm md:px-6 py-1 z-50 sticky top-0 bg-white">
       <div className="flex items-center justify-between w-full mx-auto px-3">
         <button
           className="pr-6 py-1 text-[#9f9f9f] items-center sm:flex lg:hidden"
@@ -27,7 +27,11 @@ const Header = ({ setExpand }) => {
         </button>
         <div className="mr-auto">
           <Link to="/">
-            <img src="icon.jpg" className="w-[50px]" alt="Logo" />
+            <img
+              src="https://appx-wsb-gcp-mcdn.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg"
+              className="w-[50px]"
+              alt="Logo"
+            />
           </Link>
         </div>
 

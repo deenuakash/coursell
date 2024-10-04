@@ -15,7 +15,7 @@ const Footer = () => {
           <div className="flex justify-evenly flex-wrap gap-6">
             <div className=" flex flex-col">
               <img
-                src="./icon.jpg"
+                src="https://appx-wsb-gcp-mcdn.akamai.net.in/subject/2023-01-17-0.17044360120951185.jpg"
                 alt="Logo"
                 className="w-[100px] rounded-full"
               />

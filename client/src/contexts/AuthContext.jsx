@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const login = (token) => {
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", JSON.stringify(token));
     const decodedToken = jwtDecode(token);
     setUser(decodedToken);
     setIsAuthenticated(true);
@@ -31,7 +31,7 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = JSON.parse(localStorage.getItem("token"));
     if (token && validateToken(token)) {
       login(token);
     } else {

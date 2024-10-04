@@ -5,7 +5,7 @@ import { ModalContext } from "./contexts/ModalContext";
 
 function App() {
   const [expand, setExpand] = useState(true);
-  const { show } = useContext(ModalContext);
+  const { show, setShow } = useContext(ModalContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,15 +24,15 @@ function App() {
     <div className="font-sans relative">
       <Header setExpand={setExpand} />
       <div className="flex">
-        <SideBar expand={expand} />
+        <SideBar expand={expand} setExpand={setExpand} />
         <div
           className={`transition-all duration-300 ${
             expand ? "lg:ml-[280px]" : "ml-0"
-          } w-full`}
+          } w-full relative`}
         >
           <div className="container mx-auto">
             <div className="flex flex-wrap justify-center ">
-              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-full md:w-[90%] lg:w-[80%] relative">
+              <div className="flex flex-col justify-between mt-12 min-h-[85vh] max-w-full px-3 w-[95%] md:w-[90%] xl:w-[80%]">
                 <Outlet />
                 <Footer />
               </div>

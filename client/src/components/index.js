@@ -6,6 +6,7 @@ import CourseCard from "./CourseCard";
 import HomeSection from "./HomeSection";
 import Modal from "./Modal";
 import ProtectedRoute from "./ProtectedRoute";
+import Description from "./Description";
 
 export {
   Header,
@@ -16,4 +17,5 @@ export {
   HomeSection,
   Modal,
   ProtectedRoute,
+  Description,
 };

@@ -37,7 +37,7 @@ async function sendEmail(to, otp) {
     // Email options
     const mailOptions = {
       from: `"Coursell" <${process.env.EMAIL_ID}>`, // sender address
-      to: "akashraja1108@gmail.com", // receiver
+      to, // receiver
       subject: "Registration OTP",
       html: `
         <div style="font-weight:bold; padding:25px">

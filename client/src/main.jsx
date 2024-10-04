@@ -4,7 +4,16 @@ import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import { Courses, Home, Login, Purchases, Search, Settings } from "./pages";
+import {
+  Course,
+  Courses,
+  Home,
+  Login,
+  PurchasedCourse,
+  Purchases,
+  Search,
+  Settings,
+} from "./pages";
 import AuthProvider from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ModalProvider from "./contexts/ModalContext.jsx";
@@ -22,8 +31,16 @@ const router = createBrowserRouter([
         element: <Courses />,
       },
       {
+        path: "/new-courses/:id",
+        element: <Course />,
+      },
+      {
         path: "/purchases",
         element: <ProtectedRoute element={<Purchases />} />,
+      },
+      {
+        path: "/purchases/:id",
+        element: <ProtectedRoute element={<PurchasedCourse />} />,
       },
       { path: "/settings", element: <ProtectedRoute element={<Settings />} /> },
       { path: "/login", element: <Login /> },
