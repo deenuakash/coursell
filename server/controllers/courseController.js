@@ -118,9 +118,9 @@ const getPurchases = async (req, res) => {
     if (purchases.length === 0) {
       return res.status(200).json({
         message: "No Purchases available",
+        purchases,
       });
     }
-    console.log(purchases.length);
 
     const courseIds = purchases.map((purchase) => purchase.courseId);
 

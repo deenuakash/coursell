@@ -7,8 +7,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Description } from "../components";
 import { ModalContext } from "../contexts/ModalContext";
 import { AuthContext } from "../contexts/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 const Course = () => {
   const { id } = useParams();
@@ -104,7 +103,6 @@ const Course = () => {
 
   return (
     <div>
-      <ToastContainer />
       <div ref={bannerRef} className="absolute top-0 left-0 w-full">
         <div className="w-full py-12 bg-[#1058B7]">
           <div className="container mx-auto">

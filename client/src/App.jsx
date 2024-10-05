@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import { Footer, Header, Modal, SideBar } from "./components";
 import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "./contexts/ModalContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [expand, setExpand] = useState(true);
@@ -22,6 +24,7 @@ function App() {
 
   return (
     <div className="font-sans relative">
+      <ToastContainer />
       <Header setExpand={setExpand} />
       <div className="flex">
         <SideBar expand={expand} setExpand={setExpand} />

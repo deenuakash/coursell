@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "projects": {
+    "client": {
+      "src": "client",
+      "use": "@vercel/static-build",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist"
+    },
+    "server": {
+      "src": "server",
+      "use": "@vercel/node"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/$1"
+    }
+  ]
+}

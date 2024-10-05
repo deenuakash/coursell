@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Purchases = () => {
@@ -28,6 +28,12 @@ const Purchases = () => {
           Courses
         </Link>
       </div>
+
+      {data?.purchases?.length === 0 && (
+        <div className="flex w-full mb-4 p-4 relative bg-[#d0e3fb] text-[#0c448d] rounded-3xl border border-[#b9d4f9] leading-[1.8]">
+          No Purchased courses
+        </div>
+      )}
 
       <div className="flex flex-wrap">
         {data?.courses?.map((course) => (

@@ -13,6 +13,19 @@ const verifyOTPSchema = z.object({
   otp: z.string().length(4),
 });
 
+const updateProfileSchema = z.object({
+  fullName: z.string(),
+  email: z.string().email(),
+  phone: z.string().regex(phoneRegex, {
+    message: "Phone number is invalid",
+  }),
+});
+
+const changePasswordSchema = z.object({
+  password: z.string().min(8).max(50),
+  newPassword: z.string().min(8).max(50),
+});
+
 const signupSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8).max(30),
@@ -37,4 +50,6 @@ module.exports = {
   courseSchema,
   emailOrPhoneSchema,
   verifyOTPSchema,
+  updateProfileSchema,
+  changePasswordSchema,
 };

@@ -144,7 +144,6 @@ const courses = async function (req, res) {
 
 const updateCourse = async function (req, res) {
   const { _id } = req.params;
-  console.log(req.params);
   const { name, description, price } = req.body;
 
   const parsedData = courseSchema.safeParse(req.body);

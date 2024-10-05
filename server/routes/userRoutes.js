@@ -8,10 +8,19 @@ const {
   sendOTP,
   verifyOTP,
   resetPassword,
+  getUserProfile,
+  updateUserProfile,
+  changePassword,
 } = require("../controllers/userController");
 const userAuth = require("../middlewares/userAuth");
 
 userRouter.post("/checkUser", checkUser);
+
+userRouter.get("/profile", userAuth, getUserProfile);
+
+userRouter.put("/updateProfile", userAuth, updateUserProfile);
+
+userRouter.put("/changePassword", userAuth, changePassword);
 
 userRouter.post("/sendOTP", sendOTP);
 

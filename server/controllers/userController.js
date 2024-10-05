@@ -7,6 +7,8 @@ const {
   signinSchema,
   emailOrPhoneSchema,
   verifyOTPSchema,
+  updateProfileSchema,
+  changePasswordSchema,
 } = require("../utils/validationSchema");
 const courseModel = require("../models/courseModel");
 const purchaseModel = require("../models/purchaseModel");
@@ -326,6 +328,101 @@ const purchases = async function (req, res) {
   }
 };
 
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await userModel.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not available",
+      });
+    }
+
+    res.status(200).json({
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const updateUserProfile = async (req, res) => {
+  const { fullName, phone } = req.body;
+  const parsedData = updateProfileSchema.safeParse(req.body);
+  try {
+    if (!parsedData.success) {
+      return res.status(401).json({
+        message: "Incorrect data sent.",
+        error: parsedData.error.errors,
+      });
+    }
+    const user = await userModel.updateOne(
+      { _id: req.user._id },
+      { fullName, phone }
+    );
+    res.status(200).json({
+      message: "Profile updated Successfully",
+      user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const changePassword = async (req, res) => {
+  const { password, newPassword } = req.body;
+  try {
+    const parsedData = changePasswordSchema.safeParse(req.body);
+    if (!parsedData.success) {
+      return res.status(401).json({
+        message: "Weak Password",
+        error: parsedData.error.errors,
+      });
+    }
+
+    const user = await userModel.findOne({
+      _id: req.user._id,
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User is invalid",
+      });
+    }
+
+    const isPasswordMatching = await bcrypt.compare(password, user.password);
+
+    if (isPasswordMatching) {
+      return res.status(401).json({
+        message: "Old password is incorrect",
+      });
+    }
+
+    const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await userModel.updateOne(
+      { _id: req.user._id },
+      { password: newHashedPassword }
+    );
+
+    return res.status(200).json({
+      message: "Password updated!",
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -335,4 +432,7 @@ module.exports = {
   sendOTP,
   verifyOTP,
   resetPassword,
+  getUserProfile,
+  updateUserProfile,
+  changePassword,
 };

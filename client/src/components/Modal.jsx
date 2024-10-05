@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { emailOrPhoneSchema, passwordSchema } from "../utils/validationSchema";
 import { AuthContext } from "../contexts/AuthContext";
+import { toast } from "react-toastify";
 
 const Modal = () => {
   const { setShow } = useContext(ModalContext); // Get 'setShow' to close the modal
@@ -50,11 +51,10 @@ const Modal = () => {
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       if (data.status) setStep(2);
       else {
-        handleOTPLogin(input);
         otpStep();
+        handleOTPLogin(input);
       }
     },
     onError: (err) => {
@@ -73,9 +73,17 @@ const Modal = () => {
     onSuccess: (data) => {
       login(data.token);
       setShow(false);
+      toast.success("Login Successful", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
     onError: (err) => {
       setError(err.response.data.message);
+      toast.error("Login Failed", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
   });
 
@@ -91,7 +99,10 @@ const Modal = () => {
       otpStep();
     },
     onError: (err) => {
-      console.log(err);
+      toast.error("Sending OTP Failed", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
   });
 
@@ -105,10 +116,18 @@ const Modal = () => {
     },
 
     onSuccess: (data) => {
+      toast.success("Login Successful!", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
       login(data.token);
       setShow(false);
     },
     onError: (err) => {
+      toast.error("Login Failed!", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
       setError(err.response.data.message);
     },
   });
@@ -123,9 +142,17 @@ const Modal = () => {
     onSuccess: (data) => {
       setShow(false);
       setResetPassword(false);
+      toast.success("Password reset Successful", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
     onError: (err) => {
       console.log(err);
+      toast.error("Password reset Failed", {
+        position: "bottom-right",
+        autoClose: 5000,
+      });
     },
   });
 
@@ -152,6 +179,10 @@ const Modal = () => {
 
   const handleOTPLogin = () => {
     sendOTPMutation(input);
+    toast.info("OTP Sent!", {
+      position: "bottom-right",
+      autoClose: 5000,
+    });
   };
 
   const verifyOTP = () => {
@@ -162,6 +193,10 @@ const Modal = () => {
   };
 
   const resendOTP = () => {
+    toast.info("OTP Sent!", {
+      position: "bottom-right",
+      autoClose: 5000,
+    });
     setShowResend(false);
     setTimer(30);
     sendOTPMutation(input);
@@ -169,8 +204,8 @@ const Modal = () => {
 
   const sendOTPForReset = () => {
     setResetPassword(true);
-    handleOTPLogin(input);
     otpStep();
+    handleOTPLogin(input);
   };
 
   const handleResetPassword = () => {

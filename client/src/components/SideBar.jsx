@@ -4,9 +4,17 @@ import { NavLink } from "react-router-dom";
 import { navItems1, navItems2 } from "../utils/navItems";
 import { AuthContext } from "../contexts/AuthContext";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { toast } from "react-toastify";
 
-const SideBar = ({ expand, setExpand }) => {
+const SideBar = ({ expand }) => {
   const { isAuthenticated, logout } = useContext(AuthContext);
+  const HandleLogout = () => {
+    logout();
+    toast.success("Logged out Successfully", {
+      position: "bottom-right",
+      autoClose: 5000,
+    });
+  };
   return (
     <div
       className={` ${
@@ -58,7 +66,7 @@ const SideBar = ({ expand, setExpand }) => {
               </li>
             ))}
             <li className="mb-2 flex flex-col leading-[1.8]">
-              <NavLink to="/" className="px-4 py-2" onClick={logout}>
+              <NavLink to="/" className="px-4 py-2" onClick={HandleLogout}>
                 <FontAwesomeIcon icon={faRightFromBracket} className="mr-2" />
                 Logout
               </NavLink>
